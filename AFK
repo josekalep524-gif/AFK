@@ -1,0 +1,122 @@
+-- AFK HUB
+-- Anti-AFK para Roblox Studio
+
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
+
+local player = Players.LocalPlayer
+
+local antiAFK = false
+local minimized = false
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "AFK"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 250, 0, 170)
+main.Position = UDim2.new(0.5, -125, 0.5, -85)
+main.BackgroundColor3 = Color3.fromRGB(15, 15, 22)
+main.BorderSizePixel = 0
+main.Active = true
+main.Draggable = true
+main.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = main
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(170, 70, 255)
+stroke.Thickness = 2
+stroke.Parent = main
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -70, 0, 40)
+title.Position = UDim2.new(0, 12, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "✦ AFK HUB"
+title.TextColor3 = Color3.fromRGB(210, 160, 255)
+title.TextSize = 21
+title.Font = Enum.Font.GothamBold
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = main
+
+local minimize = Instance.new("TextButton")
+minimize.Size = UDim2.new(0, 30, 0, 30)
+minimize.Position = UDim2.new(1, -68, 0, 5)
+minimize.BackgroundColor3 = Color3.fromRGB(65, 35, 95)
+minimize.Text = "-"
+minimize.TextColor3 = Color3.new(1, 1, 1)
+minimize.TextSize = 22
+minimize.Parent = main
+
+local close = Instance.new("TextButton")
+close.Size = UDim2.new(0, 30, 0, 30)
+close.Position = UDim2.new(1, -34, 0, 5)
+close.BackgroundColor3 = Color3.fromRGB(120, 35, 55)
+close.Text = "X"
+close.TextColor3 = Color3.new(1, 1, 1)
+close.TextSize = 16
+close.Parent = main
+
+local toggle = Instance.new("TextButton")
+toggle.Size = UDim2.new(0, 210, 0, 45)
+toggle.Position = UDim2.new(0, 20, 0, 65)
+toggle.BackgroundColor3 = Color3.fromRGB(90, 40, 130)
+toggle.Text = "ANTI-AFK: OFF"
+toggle.TextColor3 = Color3.new(1, 1, 1)
+toggle.TextSize = 16
+toggle.Font = Enum.Font.GothamBold
+toggle.Parent = main
+
+local toggleCorner = Instance.new("UICorner")
+toggleCorner.CornerRadius = UDim.new(0, 8)
+toggleCorner.Parent = toggle
+
+local status = Instance.new("TextLabel")
+status.Size = UDim2.new(1, 0, 0, 25)
+status.Position = UDim2.new(0, 0, 0, 125)
+status.BackgroundTransparency = 1
+status.Text = "Estado: Desactivado"
+status.TextColor3 = Color3.fromRGB(180, 180, 190)
+status.TextSize = 13
+status.Font = Enum.Font.Gotham
+status.Parent = main
+
+toggle.MouseButton1Click:Connect(function()
+    antiAFK = not antiAFK
+
+    if antiAFK then
+        toggle.Text = "ANTI-AFK: ON"
+        toggle.BackgroundColor3 = Color3.fromRGB(40, 150, 90)
+        status.Text = "Estado: Activado"
+    else
+        toggle.Text = "ANTI-AFK: OFF"
+        toggle.BackgroundColor3 = Color3.fromRGB(90, 40, 130)
+        status.Text = "Estado: Desactivado"
+    end
+end)
+
+minimize.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    toggle.Visible = not minimized
+    status.Visible = not minimized
+    main.Size = minimized and UDim2.new(0, 250, 0, 40)
+        or UDim2.new(0, 250, 0, 170)
+    minimize.Text = minimized and "+" or "-"
+end)
+
+close.MouseButton1Click:Connect(function()
+    antiAFK = false
+    gui:Destroy()
+end)
+
+-- Detección de inactividad
+player.Idled:Connect(function()
+    if antiAFK then
+        -- Aquí puedes conectar tu sistema AFK autorizado.
+        status.Text = "Estado: Anti-AFK activo"
+    end
+end)
